@@ -1,3 +1,6 @@
+https://coders-corner.net/2013/04/09/multithreading-in-c-teil-11-lock-monitor-mutex-semaphore-semaphoreslim/
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,16 +16,17 @@
             <li><a href="#input">Input tag</a></li>
             <li><a href="#graphic">Graphical tags</a></li>
             <li><a href="#geoloc">Geolocation</a></li>
+            <li><a href="#dom_storage">DOM Storage</a></li>
+            <li><a href="#web_worker">Web Worker</a></li>
         </ul>
     </nav>
     <article>
         <h1>HTML5 Markup Features</h1>
         <section>
             <h2><a name="media">Media tags</a></h2>
-            <p>The following mp3 was downloaded from <a href="http://soundbible.com/2103-1-Person-Cheering.html">here</a>. The file is licensed under CC Attribution 3.0.</p>
-            <audio src="1_person_cheering-Jett_Rifkin-1851518140.mp3" controls />
+            <audio src="http://www.zupiano.com/mp3s/Zeynep%20Ucbasaran-Liszt,%20Fantasie%20und%20Fuge%20uber%20das%20Thema%20B-A-C-H.mp3" controls />
         </section>
-        <section>  
+        <section>
             <h2><a name="input">Input tags</a></h2>
             <form>
                 <p>
@@ -94,23 +98,93 @@
                 }
             </script>     
         </section>
+
         <section>
             <h2><a name="dom_storage">DOM Storage</a></h2>
-            <p>Press the button below to add a random number to the permanent and session storage.</p>
-            <button onclick="populateStorage()">Populate storage</button>
-            <button onclick="clearStorage()">Populate storage</button>
-            <div id="geoloc_output">Let the browser query your location.</div>
+            <p>Press the button below to add random numbers to the permanent and session storage.</p>
+            <input id="storageItemKey" placeholder="key" />
+            <input id="storageItemValue" placeholder="value" />
+            <button onclick="addToStorage(true)">Add to local storage</button>
+            <button onclick="addToStorage(false)">Add to session storage</button>
+            <br />
+            <input id="storageItemKeyToDelete" placeholder="key" />
+            <button onclick="removeFromStorage(true)">Remove from local storage</button>
+            <button onclick="removeFromStorage(false)">Remove from session storage</button>
+            <h3>Local storage</h3>
+            <div id="localStoreDisplay">
+            </div>
+            <h3>Session storage</h3>
+            <div id="sessionStoreDisplay">
+            </div>
             <script>
-                document.addEventListener('load', function () {
-                    window.addEventListener('storage', function(e){
-                        
-                    })
-                });
-                function populateStorage() {
-                    
+                displayStorage();
+
+                function addToStorage(isLocal) {
+                    var key = document.getElementById('storageItemKey').value;
+                    var value = document.getElementById('storageItemValue').value;
+                    if (isLocal) {
+                        window.localStorage.setItem(key, value);
+                    } else {
+                        window.sessionStorage.setItem(key, value);
+                    }
+                    displayStorage();
+                }
+
+                function removeFromStorage(isLocal) {
+                    var key = document.getElementById('storageItemKeyToDelete').value;
+                    if (isLocal) {
+                        window.localStorage.removeItem(key);
+                    } else {
+                        window.sessionStorage.removeItem(key);
+                    }
+                    displayStorage();                    
+                }
+
+                window.onstorage = function(e) {
+                    console.log('The ' + e.key + ' key has been changed from ' + e.oldValue + ' to ' + e.newValue + '.');
+                }
+
+                function displayStorage() {
+                    fillDisplay('localStoreDisplay', window.localStorage);
+                    fillDisplay('sessionStoreDisplay', window.sessionStorage);
+                }
+
+                function fillDisplay(id, storage) {
+                    var display = document.getElementById(id);
+                    display.innerHTML = '';
+                    var item_order = storage.getItem('item_order')
+                    for(var i = 0; i < storage.length; ++i) {
+                        var key = storage.key(i);
+                        var value = storage.getItem(key);
+                        display.innerHTML += `${key}: ${value} <br/>`;
+                    }                    
                 }
             </script>     
-        </section>             
+        </section>
+
+        <section>
+            <h2><a name="web_worker">Web Worker</a></h2>
+            <button onclick="startWebWorker()">Start worker</button>
+            <button onclick="killWebWorker()">Kill worker</button>
+            <h3>Results</h3>
+            <div id="webWorkerResults" style="height: 150px; width: 200px; overflow: auto;">
+            </div>
+            <script>
+                var wworker = new Worker('web-worker.js');
+                var wwResult = document.getElementById('webWorkerResults');
+                function startWebWorker() {
+                    wwResult.innerHTML = '';
+                    wworker.postMessage('message from the sample page');
+                }
+                function killWebWorker() {
+                    wworker.terminate();
+                    wwResult.innerHTML = 'Worker killed';
+                }
+                wworker.onmessage = function(e) {
+                    wwResult.innerHTML += e.data + '<br />';
+                }
+            </script>
+        </section>            
     </article>
     <footer>This is a sample HTML5 feature page.</footer>
 </body>
