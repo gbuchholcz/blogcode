@@ -11,6 +11,8 @@
         <ul>
             <li><a href="#media">Media tags</a></li>
             <li><a href="#input">Input tag</a></li>
+            <li><a href="#graphic">Graphical tags</a></li>
+            <li><a href="#geoloc">Geolocation</a></li>
         </ul>
     </nav>
     <article>
@@ -20,7 +22,7 @@
             <p>The following mp3 was downloaded from <a href="http://soundbible.com/2103-1-Person-Cheering.html">here</a>. The file is licensed under CC Attribution 3.0.</p>
             <audio src="1_person_cheering-Jett_Rifkin-1851518140.mp3" controls />
         </section>
-        <section>
+        <section>  
             <h2><a name="input">Input tags</a></h2>
             <form>
                 <p>
@@ -36,19 +38,80 @@
                     <input id="datetime_local_input" type="range" min="18" max="120"/>
                 </p>
                 <p>
-                        <label for="email_input">Email</label> 
-                        <input id="email_input" type="email" />
+                    <label for="email_input">Email</label> 
+                    <input id="email_input" type="email" />
                 </p>
                 <p>
-                        <label for="url_input">Required url</label> 
-                        <input id="url_input" name="url_input" type="url" placeholder="Enter an url" required/>
+                    <label for="url_input">Required url</label> 
+                    <input id="url_input" name="url_input" type="url" placeholder="Enter an url" required/>
+                </p>
+                <p>
+                    <label for="datalist_text_input">Required url</label> 
+                    <input id="datalist_text_input" name="city_input" type="text" placeholder="Cities" list="city_list"/>
+                    <datalist id="city_list">
+                        <option value="New York" />
+                        <option value="Tokio" />
+                        <option value="Paris" />
+                    </datalist>
                 </p>
                 <p>
                     <input type="submit" />
                 </p>
             </form>
         </section>
+        <section>
+            <h2><a name="graphic">Graphical tags</a></h2>
+            <p>A pretty copyleft sign.</p>
+            <svg width="200px" height="200px" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="45" stroke="black" stroke-width="10" fill="none"/>
+              <circle cx="50" cy="50" r="25" stroke="black" stroke-width="10" fill="none"/>
+              <path d="M 23.1532 34.5
+                       A 31 31 0 0 0 23.1532 76.8467
+                       L 50 50 Z" fill="white"/>
+            </svg>
+        </section>        
+        <section>
+            <h2><a name="geoloc">Geolocation</a></h2>
+            <p>Press the button below and see if your browser support the geolocation API.</p>
+            <button onclick="getGeoLocation()">Locate me</button>
+            <div id="geoloc_output">Let the browser query your location.</div>
+            <script>
+                function getGeoLocation() {
+                    var output = document.getElementById("geoloc_output")
+                    if (!navigator.geolocation) {
+                        output.innerHTML = "geolocation feature not supported";
+                        return;
+                    }
+                    output.innerHTML = "locating in progress ..."
+                    navigator.geolocation.getCurrentPosition(
+                        function(pos) {
+                            output.innerHTML = 'Coordinates: ' + pos.coords.latitude + ', ' + pos.coords.longitude;
+                        },
+                        function() {
+                            output.innerHTML = 'Querying location failed!'
+                        }
+                    )
+                }
+            </script>     
+        </section>
+        <section>
+            <h2><a name="dom_storage">DOM Storage</a></h2>
+            <p>Press the button below to add a random number to the permanent and session storage.</p>
+            <button onclick="populateStorage()">Populate storage</button>
+            <button onclick="clearStorage()">Populate storage</button>
+            <div id="geoloc_output">Let the browser query your location.</div>
+            <script>
+                document.addEventListener('load', function () {
+                    window.addEventListener('storage', function(e){
+                        
+                    })
+                });
+                function populateStorage() {
+                    
+                }
+            </script>     
+        </section>             
     </article>
-    <footer>Copyright &copy; 2018</footer>
+    <footer>This is a sample HTML5 feature page.</footer>
 </body>
 </html>
